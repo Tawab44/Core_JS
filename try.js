@@ -14,6 +14,8 @@
 // )})//
 
 //8/07/2025
+//again all just to test commit
+
 let name="Tawab";
 let age=21;
 console.log("Hello " + name +",your age is " + age);
@@ -58,3 +60,46 @@ let user={
 };
 console.log(user.name1);
 //18 august  
+let name="Tawab";
+let age=21;
+console.log("Hello " + name +",your age is " + age);
+age=17
+if (age>=18) {
+    console.log("You can vote");
+}else{
+    console.log("You cannot vote");
+}
+console.log("Hello " + name +",your age is " + age);
+function greet(){
+    return console.log("Hello Coder");
+}
+
+function thunder(age){
+    return console.log("U r " +age+ " years old.");
+}
+thunder(21);
+function add(a,b){
+    console.log("The additiopn is ",a+b)
+}
+add(5,5);
+function div(a,b){
+    console.log("The division is ",a/b)
+}
+div(5,5);
+function Tawab(a,b){
+    console.log("This is multiplication",a*b);
+}
+Tawab(5,5);
+
+function sub(a,b){
+    console.log("The subtraction is",a-b);
+
+}
+sub(5,0);
+
+let user={
+    name1:"user1",
+    age:21
+
+};
+console.log(user.name1);
