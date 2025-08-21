@@ -166,3 +166,4 @@ let user2={
 console.log(user2.name1);
 
 //will this count as contribution
+//how lazy :}
