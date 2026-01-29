@@ -1035,4 +1035,95 @@ const Home = () => {
 };
 
 export default Home;
+
 ---------------------------------- 
+Flow of Project--2️⃣ DETAILED FLOW (STEP-BY-STEP)
+🟢 STEP 1: User Interaction
+
+User opens Herb AI website
+
+Accesses:
+
+Home
+
+Login / Signup
+
+Virtual Garden
+
+About
+
+🟢 STEP 2: Authentication Flow
+User → Login/Signup Form → Backend Auth API → MongoDB
+
+
+Signup:
+
+Data stored in MongoDB Atlas
+
+Login:
+
+Backend validates user
+
+JWT token returned
+
+Token stored in localStorage
+
+🟢 STEP 3: Image Upload Flow
+User → Upload Image → Frontend → Backend API
+
+
+Image sent as multipart/form-data
+
+Backend receives image
+
+🟢 STEP 4: ML Prediction Flow
+Backend → Load .h5 Model → Preprocess Image → Predict
+
+
+CNN + ResNet/Inception
+
+Outputs:
+
+Predicted herb
+
+Confidence score
+
+🟢 STEP 5: Herb Information Fetch
+Prediction Result → MongoDB → Plant Details
+
+
+Fetch:
+
+Scientific name
+
+Medicinal properties
+
+Uses
+
+Symptoms treated
+
+Image URL
+
+🟢 STEP 6: Response Back to UI
+Backend → JSON Response → Frontend
+
+
+Displayed as:
+
+Prediction card
+
+Virtual Garden plant cards
+
+🟢 STEP 7: Deployment Architecture
+Frontend  →  Vercel
+Backend + ML → Hugging Face Spaces
+Database → MongoDB Atlas
+
+
+✔ Accessible from any device
+✔ Free & scalable
+✔ Portfolio-ready
+
+🔷 3️⃣ ONE-LINE FLOW (FOR EXAMS / PPT)
+
+User uploads a plant image → Frontend sends it to backend → ML model predicts the herb → Backend fetches herb details from MongoDB → Result is displayed on the UI.--
