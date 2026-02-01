@@ -1127,3 +1127,6 @@ Database → MongoDB Atlas
 🔷 3️⃣ ONE-LINE FLOW (FOR EXAMS / PPT)
 
 User uploads a plant image → Frontend sends it to backend → ML model predicts the herb → Backend fetches herb details from MongoDB → Result is displayed on the UI.--
+------------------------------------------------
+30/1/26--Add Medicinal property filter search,Feedback form for user,MUltiple plants img upload predition,try Multiple ml model,add chatbot.----
+
