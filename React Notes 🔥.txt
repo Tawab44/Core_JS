@@ -1130,6 +1130,11 @@ User uploads a plant image → Frontend sends it to backend → ML model predict
 ------------------------------------------------
 30/1/26--Add Medicinal property filter search,Feedback form for user,MUltiple plants img upload predition,try Multiple ml model,add chatbot.----
 -----------
-17/2/26
+17/2/26--For cloud itegration one feature idea -in feedback form the user send the img which when stored in mongodb comnsumes more space so instead host the img on the cloud like imgCDN or imgKIT and then save the uri/url in the monfodbdatabase,another freature is to send an confirmation email to the user about the querry.
+------------------
+added the feedback/querry form for the user - in mongodb cluster created collection queries under test database ,then in backend added files in models-query.js, routes- queryroutes.js ,edited server.js,created upload folder in backend for img uploads (using muter node module)locally.In frontend added query.jsx in pages folder and edited App.jsx and Navbar.jsx.
+-----------------------------
+
+
 
 
