@@ -1,0 +1,1136 @@
+17/1/26
+Final Folder Structure (Recommended)
+src/
+│
+├── components/
+│   └── Navbar.jsx
+│
+├── pages/
+│   ├── Home.jsx
+│   ├── About.jsx
+│   ├── Login.jsx
+│   └── Signup.jsx
+│
+├── styles/
+│   └── navbar.css
+│
+├── App.jsx
+├── main.jsx
+
+✅ Why this structure?
+
+components/ → reusable UI (Navbar, Footer)
+
+pages/ → full pages (Home, Login, About)
+
+styles/ → CSS files
+
+App.jsx → routing + layout
+
+main.jsx → React entry point
+---------------------------------------
+❌ Why this error occurs
+
+In JSX, a component can return ONLY ONE parent element.
+
+Your About.jsx currently looks like this (problematic):
+
+const About = () => {
+  return <h1 style={{ padding: "20px" }}>About Page</h1>
+  <h4>Herb AI is an intelligent platform...</h4>
+};
+
+export default About;
+
+
+🚫 Here, React sees two adjacent elements:
+
+<h1>
+
+<h4>
+
+That’s why it says:
+
+Adjacent JSX elements must be wrapped in an enclosing tag
+
+✅ Correct Solution (Best Practice)
+
+Wrap everything inside one parent container
+You can use:
+
+a <div>
+
+OR a React Fragment <> </> (recommended)
+
+✅ FIXED About.jsx (Clean & Correct)
+Option 1: Using Fragment (BEST)
+const About = () => {
+  return (
+    <>
+      <h1 style={{ padding: "20px" }}>About Page</h1>
+      <h4 style={{ padding: "0 20px" }}>
+        Herb AI is an intelligent platform that helps users identify herbs from images instantly.
+        Using advanced machine learning, it provides accurate information about medicinal plants,
+        their uses, and benefits.
+      </h4>
+    </>
+  );
+};
+
+export default About;
+-------------------------
+myherb/
+│
+├── Frontend/     ← your existing React app
+│
+└── Backend/
+    ├── config/
+    │   └── db.js
+    │
+    ├── models/
+    │   └── User.js
+    │
+    ├── routes/
+    │   └── authRoutes.js
+    │
+    ├── server.js
+    ├── .env
+    └── package.json
+----------------------------
+npm install express mongoose dotenv cors bcryptjs jsonwebtoken
+------------------------------------------
+Your current IP address (103.187.123.165) has been added to enable local connectivity. Only an IP address you add to your Access List will be able to connect to your project's clusters. Add more later in Network Access.
+--------------------------------------------------------
+ u-dragogamer4444_db_user                  p-sUBCt2c6oGYWadX4
+------------------------
+C:\Program Files\MongoDB Compass\
+-----------------------------------
+Connection String--mongodb+srv://dragogamer4444_db_user:<db_password>@cluster0.7xktqko.mongodb.net/
+-----------------------
+connection string with pass--mongodb+srv://dragogamer4444_db_user:sUBCt2c6oGYWadX4@cluster0.7xktqko.mongodb.net/
+-------------------------------------
+remove env from GitHub
+---------------------------------
+📌 About what you’re seeing in Compass
+
+You mentioned seeing:
+
+admin
+local-oplog.rs
+test-users
+
+Here’s what they mean:
+🟢 admin
+
+System database
+
+Used by MongoDB internally
+
+You never touch this
+
+🟡 local-oplog.rs
+
+Replication log (oplog)
+
+Used by MongoDB Atlas
+
+Normal, ignore it
+
+🟢 test-users (IMPORTANT)
+
+This is YOUR DATABASE + COLLECTION
+
+Most likely:
+
+test → database
+
+users → collection
+---------------------------------------
+Signup.jsx changed --const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const { name, email, password, confirmPassword } = formData;
+
+  // Frontend validations
+  if (!name || !email || !password || !confirmPassword) {
+    setError("All fields are required");
+    return;
+  }
+
+  if (!isStrongPassword(password)) {
+    setError(
+      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character"
+    );
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setError(data.message || "Signup failed");
+      return;
+    }
+
+    alert("Signup successful 🎉 Now login");
+  } catch (error) {
+    setError("Server error. Try again later.");
+  }
+};
+---------------------------------
+Login.jsx--
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/auth.css";
+
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      setError("All fields are required");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      // ✅ Save JWT token
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      alert("Login successful 🎉");
+      navigate("/");
+    } catch (error) {
+      setError("Server error. Try again later.");
+    }
+  };
+
+  return (
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Login</h2>
+
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <button type="submit">Login</button>
+        </form>
+
+        <div className="auth-footer">
+          Don’t have an account? <Link to="/signup">Sign up</Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
+------------------------------------------------
+1.In pages I made Vgarden.jsx--const Vgarden = () => {
+  return (
+  <div>
+  <h1 style={{ padding: "20px" }}>Garden Page</h1>
+<h4>Plant Cards here</h4>
+</div>
+);
+};
+
+export default Vgarden;--
+
+In Navbar.jsx I added --<li><Link to="/Vgarden">VGarden</Link></li>--
+In App.jsx added --import Vgarden from "./pages/Vgarden";--and--<Route path="/Vgarden" element={<Vgarden />}/>--and got the Vgargen page running from Navbar options--
+-----------------------------------------
+for Mlend just added -app.py,requrements.txt and model.h5 file pip intall
+and in Frontend edited Home.jsx
+
+-------------
+old home.jsx--
+
+import { useState } from "react";
+
+const Home = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // Allow only image files
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file");
+      return;
+    }
+
+    setSelectedImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  return (
+    <div style={{ padding: "20px", maxWidth: "800px" }}>
+      <h1>
+        Upload an image of a plant and let AI identify it for you.
+      </h1>
+
+      <h4 style={{ marginTop: "10px", lineHeight: "1.6" }}>
+        Herb AI is a free and open-source platform designed to identify plants and
+        herbs using machine learning. It comes with a simple image upload tool,
+        a clean interface, and all the sections you need to explore detailed herb
+        information.
+      </h4>
+
+      {/* Upload Section */}
+      <div style={{ marginTop: "30px" }}>
+        <label
+          htmlFor="plantImage"
+          style={{
+            padding: "12px 20px",
+            backgroundColor: "#16a34a",
+            color: "white",
+            borderRadius: "8px",
+            cursor: "pointer",
+            display: "inline-block",
+            fontWeight: "bold",
+          }}
+        >
+          📤 Upload Plant Image
+        </label>
+
+        <input
+          type="file"
+          id="plantImage"
+          accept="image/*"
+          onChange={handleImageUpload}
+          style={{ display: "none" }}
+        />
+      </div>
+
+      {/* Image Preview */}
+      {preview && (
+        <div style={{ marginTop: "25px" }}>
+          <h4>Selected Image Preview:</h4>
+          <img
+            src={preview}
+            alt="Selected plant"
+            style={{
+              marginTop: "10px",
+              maxWidth: "300px",
+              borderRadius: "10px",
+              border: "2px solid #16a34a",
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Home;
+------------------------
+Updated homne .jsx--
+import { useState } from "react";
+import axios from "axios";
+
+const Home = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [prediction, setPrediction] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file");
+      return;
+    }
+
+    setSelectedImage(file);
+    setPreview(URL.createObjectURL(file));
+    setPrediction(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedImage) {
+      alert("Please select an image!");
+      return;
+    }
+
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("file", selectedImage);
+
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:8000/predict/",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      setPrediction(res.data);
+    } catch (err) {
+      console.error(err);
+      alert("Error uploading or predicting!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ padding: "20px", maxWidth: "800px" }}>
+      <h1>
+        Upload an image of a plant and let AI identify it for you.
+      </h1>
+
+      <h4 style={{ marginTop: "10px", lineHeight: "1.6" }}>
+        Herb AI is a free and open-source platform designed to identify plants and
+        herbs using machine learning. Upload an image below to get instant
+        predictions.
+      </h4>
+
+      {/* Upload Form */}
+      <form onSubmit={handleSubmit} style={{ marginTop: "30px" }}>
+        <label
+          htmlFor="plantImage"
+          style={{
+            padding: "12px 20px",
+            backgroundColor: "#16a34a",
+            color: "white",
+            borderRadius: "8px",
+            cursor: "pointer",
+            display: "inline-block",
+            fontWeight: "bold",
+          }}
+        >
+          📤 Upload Plant Image
+        </label>
+
+        <input
+          type="file"
+          id="plantImage"
+          accept="image/*"
+          onChange={handleImageUpload}
+          style={{ display: "none" }}
+        />
+
+        <br />
+
+        <button
+          type="submit"
+          style={{
+            marginTop: "20px",
+            padding: "10px 25px",
+            backgroundColor: "#15803d",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontSize: "16px",
+          }}
+          disabled={loading}
+        >
+          {loading ? "Predicting..." : "Predict 🌱"}
+        </button>
+      </form>
+
+      {/* Image Preview */}
+      {preview && (
+        <div style={{ marginTop: "25px" }}>
+          <h4>Selected Image Preview:</h4>
+          <img
+            src={preview}
+            alt="Selected plant"
+            style={{
+              marginTop: "10px",
+              maxWidth: "300px",
+              borderRadius: "10px",
+              border: "2px solid #16a34a",
+            }}
+          />
+        </div>
+      )}
+
+      {/* Prediction Display */}
+      {prediction && !prediction.error && (
+        <div
+          style={{
+            marginTop: "25px",
+            padding: "15px",
+            border: "1px solid #ccc",
+            borderRadius: "10px",
+            backgroundColor: "#f0fdf4",
+          }}
+        >
+          <h3>
+            Prediction:{" "}
+            <span style={{ color: "#16a34a" }}>
+              {prediction.class}
+            </span>
+          </h3>
+          <p>
+            Probability:{" "}
+            {(prediction.probability * 100).toFixed(2)}%
+          </p>
+        </div>
+      )}
+
+      {/* Error */}
+      {prediction?.error && (
+        <div style={{ marginTop: "20px", color: "red" }}>
+          Error: {prediction.error}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Home;
+-------------------------
+app.py--
+from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.resnet50 import preprocess_input
+import numpy as np
+import shutil
+import os
+
+# Initialize FastAPI
+app = FastAPI()
+
+# Allow frontend requests
+origins = ["http://localhost:5173"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Load trained model
+model = load_model("ResNet50_m1.h5")
+
+# Class labels
+CLASS_NAMES = [str(i) for i in range(30)]
+
+IMG_HEIGHT, IMG_WIDTH = 224, 224
+
+@app.get("/")
+def home():
+    return {"message": "Herb AI Prediction API is running."}
+
+@app.post("/predict/")
+async def predict(file: UploadFile = File(...)):
+    try:
+        temp_file = f"temp_{file.filename}"
+
+        with open(temp_file, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        img = image.load_img(temp_file, target_size=(IMG_HEIGHT, IMG_WIDTH))
+        x = image.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        x = preprocess_input(x)
+
+        preds = model.predict(x)
+        predicted_index = int(np.argmax(preds[0]))
+        probability = float(preds[0][predicted_index])
+        predicted_class = CLASS_NAMES[predicted_index]
+
+        if probability < 0.5:
+            predicted_class = "Not a Herb"
+
+        os.remove(temp_file)
+
+        return {"class": predicted_class, "probability": probability}
+
+    except Exception as e:
+        return {"error": str(e)}
+--------------------
+requirements.txt--fastapi
+uvicorn
+tensorflow
+numpy
+python-multipart
+pillow
+--------------
+for the m3 model it wont work coz while saving it some flattern parameter was not correct --Nothing else in app.py can fix this.
+
+Your .h5 model was saved with an invalid Flatten layer config.
+You must rebuild and re-save the model properly.
+-----------------------
+for virtual garden 
+in mngodb atast click on data explorer-we are using cluster 0-connect the alredy connected and as we are using the test database with collection users and create another collection named plants and then ib plant click inset document and then insert the json  --
+json--
+{
+  "commonName": "Aloe Vera",
+  "scientificName": "Aloe barbadensis miller",
+  "height": "60–100 cm",
+  "medicinalProperties": [
+    "Moisturizing",
+    "Anti-inflammatory",
+    "Antioxidant",
+    "Laxative effect"
+  ],
+  "usedFor": [
+    "Skin burns",
+    "Wound healing",
+    "Hair care",
+    "Digestive aid"
+  ],
+  "symptomsTreated": [
+    "Burns",
+    "Skin irritation",
+    "Constipation",
+    "Digestive discomfort"
+  ],
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Aloe_vera_flower.JPG"
+}
+---------------
+update Vgarden.jsx--
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+const Vgarden = () => {
+  const [plants, setPlants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlants = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/plants");
+        setPlants(res.data);
+      } catch (error) {
+        console.error(error);
+        alert("Failed to load plant data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlants();
+  }, []);
+
+  if (loading) {
+    return <h2 style={{ padding: "20px" }}>Loading garden...</h2>;
+  }
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>🌿 Virtual Garden</h1>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "20px",
+          marginTop: "20px"
+        }}
+      >
+        {plants.map((plant) => (
+          <div
+            key={plant._id}
+            style={{
+              border: "1px solid #ddd",
+              borderRadius: "12px",
+              padding: "15px",
+              backgroundColor: "#f0fdf4",
+              boxShadow: "0 5px 12px rgba(0,0,0,0.1)"
+            }}
+          >
+            <img
+              src={plant.imageUrl}
+              alt={plant.commonName}
+              style={{
+                width: "100%",
+                height: "200px",
+                objectFit: "cover",
+                borderRadius: "10px"
+              }}
+            />
+
+            <h3 style={{ marginTop: "10px", color: "#166534" }}>
+              {plant.commonName}
+            </h3>
+
+            <p><strong>Scientific Name:</strong> {plant.scientificName}</p>
+            <p><strong>Height:</strong> {plant.height}</p>
+
+            <p>
+              <strong>Medicinal Properties:</strong>{" "}
+              {plant.medicinalProperties.join(", ")}
+            </p>
+
+            <p>
+              <strong>Used For:</strong>{" "}
+              {plant.usedFor.join(", ")}
+            </p>
+
+            <p>
+              <strong>Symptoms Treated:</strong>{" "}
+              {plant.symptomsTreated.join(", ")}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Vgarden;
+--------------------------------------
+for img ,change the url and try from Wikimedia.
+---------------------------------------------------
+for adding plant in Vgarden just add insert document in mondbatlast under plants collection in test database.
+---------------------------
+Vgrden without search bar--Vgarden.jsx
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+const Vgarden = () => {
+  const [plants, setPlants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlants = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/plants");
+        setPlants(res.data);
+      } catch (error) {
+        console.error(error);
+        alert("Failed to load plant data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlants();
+  }, []);
+
+  if (loading) {
+    return <h2 style={{ padding: "20px" }}>Loading garden...</h2>;
+  }
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>🌿 Virtual Garden</h1>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "20px",
+          marginTop: "20px"
+        }}
+      >
+        {plants.map((plant) => (
+          <div
+            key={plant._id}
+            style={{
+              border: "1px solid #ddd",
+              borderRadius: "12px",
+              padding: "15px",
+              backgroundColor: "#f0fdf4",
+              boxShadow: "0 5px 12px rgba(0,0,0,0.1)"
+            }}
+          >
+            <img
+              src={plant.imageUrl}
+              alt={plant.commonName}
+              style={{
+                width: "100%",
+                height: "200px",
+                objectFit: "cover",
+                borderRadius: "10px"
+              }}
+            />
+
+            <h2 style={{ marginTop: "10px", color: "#166534" }}>
+              {plant.commonName}
+            </h2>
+
+            <p><strong>Scientific Name:</strong> {plant.scientificName}</p>
+            <p><strong>Height:</strong> {plant.height}</p>
+
+            <p>
+              <strong>Medicinal Properties:</strong>{" "}
+              {plant.medicinalProperties.join(", ")}
+            </p>
+
+            <p>
+              <strong>Used For:</strong>{" "}
+              {plant.usedFor.join(", ")}
+            </p>
+
+            <p>
+              <strong>Symptoms Treated:</strong>{" "}
+              {plant.symptomsTreated.join(", ")}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Vgarden;
+-------------------------------
+Home.jsx without added content--
+import { useState } from "react";
+import axios from "axios";
+import homeBg from "../assets/mist.gif";
+
+const Home = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [prediction, setPrediction] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file");
+      return;
+    }
+
+    setSelectedImage(file);
+    setPreview(URL.createObjectURL(file));
+    setPrediction(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedImage) {
+      alert("Please select an image!");
+      return;
+    }
+
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("file", selectedImage);
+
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:8000/predict/",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      setPrediction(res.data);
+    } catch (err) {
+      console.error(err);
+      alert("Error uploading or predicting!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: `url(${homeBg}) no-repeat center center`,
+        backgroundSize: "cover",
+        padding: "40px 0",
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
+      }}
+    >
+      {/* Content Card */}
+      <div
+        style={{
+          padding: "20px",
+          maxWidth: "800px",
+          margin: "0 auto",
+          background: "rgba(46, 42, 42, 0.4)",
+          borderRadius: "12px",
+          textAlign:"center",
+        }}
+      >
+        <h1 style={{fontSize:"3rem",
+                    color:"#ffffff",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: "700",}}>
+          Upload an image of a plant and let AI {""}<span style={{ color: "#49d54d" }}>Identify</span> it for you.
+        </h1>
+
+        <h4 style={{ marginTop: "10px", 
+                     lineHeight: "1.6",
+                     color:"#ffffff",
+                     fontFamily: "'Poppins', sans-serif",
+                    fontWeight: "400",}}>
+          Herb AI is a free and open-source platform designed to identify plants and
+          herbs using machine learning. Upload an image below to get instant
+          predictions.
+        </h4>
+
+        {/* Upload Form */}
+        <form onSubmit={handleSubmit} style={{ marginTop: "30px" }}>
+          <label
+            htmlFor="plantImage"
+            style={{
+              padding: "12px 20px",
+              backgroundColor: "#16a34a",
+              color: "white",
+              borderRadius: "8px",
+              cursor: "pointer",
+              display: "inline-block",
+              fontWeight: "bold",
+              fontFamily: "'Poppins', sans-serif",
+            }}
+          >
+             Upload Plant Image 📤
+          </label>
+
+          <input
+            type="file"
+            id="plantImage"
+            accept="image/*"
+            onChange={handleImageUpload}
+            style={{ display: "none" }}
+          />
+
+          <br />
+
+          <button
+            type="submit"
+            style={{
+              marginTop: "20px",
+              padding: "10px 25px",
+              backgroundColor: "#15803d",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "16px",
+              fontFamily: "'Poppins', sans-serif",
+            }}
+            disabled={loading}
+          >
+            {loading ? "Predicting..." : "Predict 🌱"}
+          </button>
+        </form>
+
+        {/* Image Preview */}
+        {preview && (
+          <div style={{ marginTop: "25px" }}>
+            <h4>Selected Image Preview:</h4>
+            <img
+              src={preview}
+              alt="Selected plant"
+              style={{
+                marginTop: "10px",
+                maxWidth: "300px",
+                borderRadius: "10px",
+                border: "2px solid #16a34a",
+              }}
+            />
+          </div>
+        )}
+
+        {/* Prediction Display */}
+        {prediction && !prediction.error && (
+          <div
+            style={{
+              marginTop: "25px",
+              padding: "15px",
+              border: "1px solid #ccc",
+              borderRadius: "10px",
+              backgroundColor: "#f0fdf4",
+            }}
+          >
+            <h3>
+              Prediction:{" "}
+              <span style={{ color: "#16a34a" }}>
+                {prediction.class}
+              </span>
+            </h3>
+            <p>
+              Probability:{" "}
+              {(prediction.probability * 100).toFixed(2)}%
+            </p>
+          </div>
+        )}
+
+        {/* Error */}
+        {prediction?.error && (
+          <div style={{ marginTop: "20px", color: "red" }}>
+            Error: {prediction.error}
+          </div>
+        )}
+        
+      </div>
+    </div>
+    
+  );
+};
+
+export default Home;
+---------------------------------- 
+---------------------------------- 
+Flow of Project--2️⃣ DETAILED FLOW (STEP-BY-STEP)
+🟢 STEP 1: User Interaction
+
+User opens Herb AI website
+
+Accesses:
+
+Home
+
+Login / Signup
+
+Virtual Garden
+
+About
+
+🟢 STEP 2: Authentication Flow
+User → Login/Signup Form → Backend Auth API → MongoDB
+
+
+Signup:
+
+Data stored in MongoDB Atlas
+
+Login:
+
+Backend validates user
+
+JWT token returned
+
+Token stored in localStorage
+
+🟢 STEP 3: Image Upload Flow
+User → Upload Image → Frontend → Backend API
+
+
+Image sent as multipart/form-data
+
+Backend receives image
+
+🟢 STEP 4: ML Prediction Flow
+Backend → Load .h5 Model → Preprocess Image → Predict
+
+
+CNN + ResNet/Inception
+
+Outputs:
+
+Predicted herb
+
+Confidence score
+
+🟢 STEP 5: Herb Information Fetch
+Prediction Result → MongoDB → Plant Details
+
+
+Fetch:
+
+Scientific name
+
+Medicinal properties
+
+Uses
+
+Symptoms treated
+
+Image URL
+
+🟢 STEP 6: Response Back to UI
+Backend → JSON Response → Frontend
+
+
+Displayed as:
+
+Prediction card
+
+Virtual Garden plant cards
+
+🟢 STEP 7: Deployment Architecture
+Frontend  →  Vercel
+Backend + ML → Hugging Face Spaces
+Database → MongoDB Atlas
+
+
+✔ Accessible from any device
+✔ Free & scalable
+✔ Portfolio-ready
+
+🔷 3️⃣ ONE-LINE FLOW (FOR EXAMS / PPT)
+
+User uploads a plant image → Frontend sends it to backend → ML model predicts the herb → Backend fetches herb details from MongoDB → Result is displayed on the UI.--
+------------------------------------------------
+30/1/26--Add Medicinal property filter search,Feedback form for user,MUltiple plants img upload predition,try Multiple ml model,add chatbot.----
+--------
+17/2/26--For cloud itegration one feature idea -in feedback form the user send the img which when stored in mongodb comnsumes more space so instead host the img on the cloud like imgCDN or imgKIT and then save the uri/url in the monfodbdatabase,another freature is to send an confirmation email to the user about the querry.
+------------------
+added the feedback/querry form for the user - in mongodb cluster created collection queries under test database ,then in backend added files in models-query.js, routes- queryroutes.js ,edited server.js,created upload folder in backend for img uploads (using muter node module)locally.In frontend added query.jsx in pages folder and edited App.jsx and Navbar.jsx.
+-----------------------------
