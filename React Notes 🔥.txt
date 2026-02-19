@@ -1134,6 +1134,8 @@ User uploads a plant image → Frontend sends it to backend → ML model predict
 ------------------
 added the feedback/querry form for the user - in mongodb cluster created collection queries under test database ,then in backend added files in models-query.js, routes- queryroutes.js ,edited server.js,created upload folder in backend for img uploads (using muter node module)locally.In frontend added query.jsx in pages folder and edited App.jsx and Navbar.jsx.
 -----------------------------
+19/2/26--improved ui by updating query.jsx and query.css making the querry form for the user 
+
 
 
 
