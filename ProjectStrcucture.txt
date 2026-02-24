@@ -1,0 +1,88 @@
+myherb
+└── 📁Backend
+    └── 📁config
+        ├── db.js
+    └── 📁models
+        ├── Plant.js
+        ├── Query.js
+        ├── User.js
+    └── 📁routes
+        ├── authRoutes.js
+        ├── chatRoutes.js
+        ├── plantRoutes.js
+        ├── queryRoutes.js
+    └── 📁services
+        ├── geminiService.js
+    └── 📁uploads
+        ├── 1771728033567-testgingata.jpg
+        ├── 1771729621736-notmint.jpg
+    └── 📁utils
+        ├── sendEmail.js
+    ├── .env
+    ├── package-lock.json
+    ├── package.json
+    └── server.js
+└── 📁Frontend
+    └── 📁public
+        ├── vite.svg
+    └── 📁src
+        └── 📁assets
+            ├── 200.webp
+            ├── abtbg1.jpg
+            ├── ggreengear.webp
+            ├── greengear2.png
+            ├── herbbg.jpg
+            ├── herbbgtr.png
+            ├── herbbgtr2.png
+            ├── hlogo.png
+            ├── homembg.gif
+            ├── lmagni.png
+            ├── mist.gif
+            ├── mist2.gif
+            ├── react.svg
+            ├── takpl.png
+            ├── vgardenbg.webp
+            ├── vgardenf.png
+        └── 📁components
+            ├── Chatbot.jsx
+            ├── LanguageSwitcher.jsx
+            ├── Navbar.jsx
+            ├── ProtectedRoute.jsx
+        └── 📁pages
+            ├── About.jsx
+            ├── Home.jsx
+            ├── Login.jsx
+            ├── Query.jsx
+            ├── Signup.jsx
+            ├── Vgarden.jsx
+        └── 📁styles
+            ├── auth.css
+            ├── Chatbot.css
+            ├── home.css
+            ├── language.css
+            ├── navbar.css
+            ├── query.css
+        ├── App.jsx
+        ├── index.css
+        ├── main.jsx
+    ├── .gitignore
+    ├── eslint.config.js
+    ├── index.html
+    ├── package-lock.json
+    ├── package.json
+    ├── README.md
+    └── vite.config.js
+└── 📁MLend
+    └── 📁__pycache__
+        ├── app.cpython-310.pyc
+    ├── app.py
+    ├── fusion_model.pt
+    ├── model.pt
+    ├── requirements.txt
+    ├── ResNet50_m1.h5
+    └── ResNet50_m3.h5
+└── 📁node_modules
+├──.gitignore
+├── package-lock.json
+├── package.json
+├──README.md

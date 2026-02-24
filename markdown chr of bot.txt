@@ -1,0 +1,63 @@
+✅ Solution Options (Choose One)
+🏆 OPTION 1 — Render Markdown (BEST)
+
+Make chat look professional like ChatGPT.
+
+Step 1 — Install Markdown Renderer
+
+In frontend folder:
+
+npm install react-markdown
+Step 2 — Update Chatbox.jsx
+
+Add import:
+
+import ReactMarkdown from "react-markdown";
+Step 3 — Replace message display
+
+Find:
+
+{msg.text}
+
+Replace with:
+
+<ReactMarkdown>{msg.text}</ReactMarkdown>
+🎉 Result
+
+Now:
+
+**Mint Benefits**
+
+Will display as:
+
+👉 Mint Benefits
+
+Lists, headings, links also work automatically ✅
+
+🥈 OPTION 2 — Remove Markdown Characters (Simple)
+
+If you don’t want formatting, just clean text.
+
+In Chatbox.jsx before displaying:
+
+Replace:
+
+{msg.text}
+
+With:
+
+{msg.text.replace(/\*\*/g, "")}
+
+This removes all **.
+
+🥉 OPTION 3 — Tell AI Not to Use Markdown
+
+Modify backend prompt:
+
+In geminiService.js
+
+Send instruction:
+
+parts: [{ text: "Reply in plain text without markdown. " + message }]
+
+But models sometimes ignore this ❌
