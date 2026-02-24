@@ -1135,6 +1135,62 @@ User uploads a plant image → Frontend sends it to backend → ML model predict
 added the feedback/querry form for the user - in mongodb cluster created collection queries under test database ,then in backend added files in models-query.js, routes- queryroutes.js ,edited server.js,created upload folder in backend for img uploads (using muter node module)locally.In frontend added query.jsx in pages folder and edited App.jsx and Navbar.jsx.
 -----------------------------
 19/2/26--improved ui by updating query.jsx and query.css making the querry form for the user 
+--------------------------------
+21/2/26--added css for mobile ui,inetegrated .pt ml model after wasting time in.pth file 
+----------------
+22/2/26--added automail feature using nodemailer by adding utils folder in backend and sendEmail.js file in it and updated queryRoutes.js for automail,made new google account specifically for herbai mails purpose and added its credentials in .env file ,also removed .env from GitHub by using command --/git filter-branch --tree-filter 'rm -f Backend/.env' -f -- --all/-- ,adde chatbot using google gemini api from google a studio created services folder and in it added geminiservice.js file -from this we can change the model by --const response = await axios.post(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${API_KEY}`,
+    {-- changing the name of model in this link ,the api key is in .env folder ,added chatbot.jsx in components as it should be visible throughout the entire website and chatbot.css for styling in styles,-------------------
+added google translate- languageSwitcher.jsx in components and after many tries managed to hide the google default i-frame insertion (language.css)----
+-------------------------------
+23/2/26--imoroved ui and g translate by removing strict mode from main.jsx ,now only one "G "wwidget appears ,added Herbcare page by editing navbar.js ,navbar.css,app.jsx ,and creating Hercare.js and herbcare.css--poopin font is imported here if removed global font becomes saanserif , mongodb error--🧠 Why adding this line FIXED it
+export default mongoose.model("CareInfo", careInfoSchema, "careinfo");
+📌 How Mongoose normally works
+
+When you write:
+
+mongoose.model("CareInfo", schema)
+
+Mongoose automatically:
+
+1️⃣ Lowercases the name
+2️⃣ Makes it plural
+
+So:
+
+CareInfo → careinfos
+❌ Your MongoDB collection name was:
+careinfo
+
+(not careinfos)
+
+So Mongoose was querying a collection that DID NOT EXIST:
+
+db.careinfos   ❌ empty / not found
+
+Result → Backend returned empty array → Frontend showed nothing.
+
+✅ What the third parameter does
+mongoose.model("ModelName", schema, "collectionName")
+👉 It FORCES the exact MongoDB collection name
+
+So now:
+
+CareInfo → careinfo   ✅ exact match
+
+Mongoose now queries the correct collection:
+
+db.careinfo
+🧪 Real Analogy
+
+Think of it like this:
+
+🔴 Without third parameter
+“Find file named CareInfo → system guesses CareInfos.txt”
+
+🟢 With third parameter
+“Find file EXACTLY named careinfo.txt”--
+
 
 
 
